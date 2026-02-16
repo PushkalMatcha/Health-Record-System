@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  role          UserRole
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  volunteer     Volunteer?
+  patient       Patient?
+}
+
+model Volunteer {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id])
+  firstName       String
+  lastName        String
+  // Date of birth for volunteers - used for DOB-based login
+  dateOfBirth     DateTime?
+  phone           String
+  village         String?
+  address         String?
+  emergencyContact Json?
+  specialties     String[]
+  availability    Json
+  status          VolunteerStatus @default(ACTIVE)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  visits          Visit[]
+}
+
+model Patient {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  firstName     String
+  lastName      String
+  dateOfBirth   DateTime
+  address       String
+  phone         String
+  emergencyContact Json
+  medicalHistory Json
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  visits        Visit[]
+  records       HealthRecord[]
+}
+
+model Visit {
+  id            String    @id @default(cuid())
+  volunteerId   String
+  volunteer     Volunteer @relation(fields: [volunteerId], references: [id])
+  patientId     String
+  patient       Patient   @relation(fields: [patientId], references: [id])
+  scheduledFor  DateTime
+  status        VisitStatus
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model HealthRecord {
+  id            String    @id @default(cuid())
+  patientId     String
+  patient       Patient   @relation(fields: [patientId], references: [id])
+  type          String
+  date          DateTime
+  description   String
+  attachments   Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  VOLUNTEER
+  PATIENT
+}
+
+enum VolunteerStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+enum VisitStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  MISSED
+}
