@@ -47,6 +47,12 @@ const isAdmin = (req: RequestWithUser, res: express.Response, next: express.Next
   return next()
 }
 
+const getParamAsString = (param: string | string[] | undefined): string | null => {
+  if (typeof param === 'string') return param
+  if (Array.isArray(param) && param.length > 0) return param[0]
+  return null
+}
+
 app.get('/', async (req, res) => {
   const users = await prisma.user.findMany({ take: 5 })
   res.json({ status: 'ok', users })
@@ -304,7 +310,8 @@ app.post('/api/volunteers', async (req, res) => {
 // Get volunteer by ID
 app.get('/api/volunteers/:id', async (req, res) => {
   try {
-    const { id } = req.params
+    const id = getParamAsString(req.params.id)
+    if (!id) return res.status(400).json({ error: 'Invalid volunteer id' })
     const volunteer = await prisma.volunteer.findUnique({
       where: { id },
       include: {
@@ -349,7 +356,8 @@ app.put('/api/volunteers/:id', authMiddleware, async (req: RequestWithUser, res:
     console.log('Request body:', req.body)
     console.log('User from auth:', req.user)
     
-    const { id } = req.params
+    const id = getParamAsString(req.params.id)
+    if (!id) return res.status(400).json({ error: 'Invalid volunteer id' })
     const { firstName, lastName, email, phone, village, specialization, status, dateOfBirth, address, emergencyContact } = req.body
 
     // First get the volunteer to find the associated user
@@ -485,7 +493,8 @@ app.get('/api/patients', authMiddleware, async (req: RequestWithUser, res: expre
 // Get patient by ID
 app.get('/api/patients/:id', authMiddleware, async (req: RequestWithUser, res: express.Response) => {
   try {
-    const { id } = req.params
+    const id = getParamAsString(req.params.id)
+    if (!id) return res.status(400).json({ error: 'Invalid patient id' })
     const patient = await prisma.patient.findUnique({
       where: { id },
       include: {
@@ -602,7 +611,8 @@ app.post('/api/patients', authMiddleware, async (req: RequestWithUser, res: expr
 // Update patient
 app.put('/api/patients/:id', authMiddleware, async (req: RequestWithUser, res: express.Response) => {
   try {
-    const { id } = req.params
+    const id = getParamAsString(req.params.id)
+    if (!id) return res.status(400).json({ error: 'Invalid patient id' })
     const { firstName, lastName, dateOfBirth, address, phone, emergencyContact, medicalHistory } = req.body
 
     const patient = await prisma.patient.update({
@@ -638,7 +648,8 @@ app.put('/api/patients/:id', authMiddleware, async (req: RequestWithUser, res: e
 // Delete patient
 app.delete('/api/patients/:id', authMiddleware, isAdmin, async (req: RequestWithUser, res: express.Response) => {
   try {
-    const { id } = req.params
+    const id = getParamAsString(req.params.id)
+    if (!id) return res.status(400).json({ error: 'Invalid patient id' })
 
     // First get the patient to find the associated user
     const patient = await prisma.patient.findUnique({
