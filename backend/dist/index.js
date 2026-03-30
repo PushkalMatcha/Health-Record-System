@@ -276,11 +276,12 @@ app.post('/api/volunteers', async (req, res) => {
 // Get volunteer by ID
 app.get('/api/volunteers/:id', async (req, res) => {
     try {
-        const id = getParamAsString(req.params.id);
+        const rawId = req.params.id;
+        const id = Array.isArray(rawId) ? rawId[0] : rawId;
         if (!id)
             return res.status(400).json({ error: 'Invalid volunteer id' });
         const volunteer = await prisma_1.prisma.volunteer.findUnique({
-            where: { id },
+            where: { id: id },
             include: {
                 user: {
                     select: {
@@ -319,14 +320,15 @@ app.put('/api/volunteers/:id', authMiddleware, async (req, res) => {
         console.log('Volunteer ID:', req.params.id);
         console.log('Request body:', req.body);
         console.log('User from auth:', req.user);
-        const id = getParamAsString(req.params.id);
+        const rawId = req.params.id;
+        const id = Array.isArray(rawId) ? rawId[0] : rawId;
         if (!id)
             return res.status(400).json({ error: 'Invalid volunteer id' });
         const { firstName, lastName, email, phone, village, specialization, status, dateOfBirth, address, emergencyContact } = req.body;
         // First get the volunteer to find the associated user
         console.log('Looking for volunteer with ID:', id);
         const volunteer = await prisma_1.prisma.volunteer.findUnique({
-            where: { id },
+            where: { id: id },
             select: { userId: true }
         });
         if (!volunteer) {
@@ -355,7 +357,7 @@ app.put('/api/volunteers/:id', authMiddleware, async (req, res) => {
             emergencyContact
         });
         const updatedVolunteer = await prisma_1.prisma.volunteer.update({
-            where: { id },
+            where: { id: id },
             data: {
                 firstName,
                 lastName,
@@ -446,11 +448,12 @@ app.get('/api/patients', authMiddleware, async (req, res) => {
 // Get patient by ID
 app.get('/api/patients/:id', authMiddleware, async (req, res) => {
     try {
-        const id = getParamAsString(req.params.id);
+        const rawId = req.params.id;
+        const id = Array.isArray(rawId) ? rawId[0] : rawId;
         if (!id)
             return res.status(400).json({ error: 'Invalid patient id' });
         const patient = await prisma_1.prisma.patient.findUnique({
-            where: { id },
+            where: { id: id },
             include: {
                 user: {
                     select: {
@@ -557,12 +560,13 @@ app.post('/api/patients', authMiddleware, async (req, res) => {
 // Update patient
 app.put('/api/patients/:id', authMiddleware, async (req, res) => {
     try {
-        const id = getParamAsString(req.params.id);
+        const rawId = req.params.id;
+        const id = Array.isArray(rawId) ? rawId[0] : rawId;
         if (!id)
             return res.status(400).json({ error: 'Invalid patient id' });
         const { firstName, lastName, dateOfBirth, address, phone, emergencyContact, medicalHistory } = req.body;
         const patient = await prisma_1.prisma.patient.update({
-            where: { id },
+            where: { id: id },
             data: {
                 firstName,
                 lastName,
@@ -593,20 +597,23 @@ app.put('/api/patients/:id', authMiddleware, async (req, res) => {
 // Delete patient
 app.delete('/api/patients/:id', authMiddleware, isAdmin, async (req, res) => {
     try {
-        const id = getParamAsString(req.params.id);
+        const rawId = req.params.id;
+        const id = Array.isArray(rawId) ? rawId[0] : rawId;
         if (!id)
             return res.status(400).json({ error: 'Invalid patient id' });
         // First get the patient to find the associated user
         const patient = await prisma_1.prisma.patient.findUnique({
-            where: { id },
-            select: { userId: true }
+            where: { id: id },
+            include: {
+                user: true
+            }
         });
         if (!patient) {
             return res.status(404).json({ error: 'Patient not found' });
         }
         // Delete patient and associated user
-        await prisma_1.prisma.patient.delete({ where: { id } });
-        await prisma_1.prisma.user.delete({ where: { id: patient.userId } });
+        await prisma_1.prisma.patient.delete({ where: { id: id } });
+        await prisma_1.prisma.user.delete({ where: { id: patient.user.id } });
         res.json({ message: 'Patient deleted successfully' });
     }
     catch (err) {
