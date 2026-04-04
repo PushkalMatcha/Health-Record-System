@@ -283,50 +283,42 @@ NEXT_PUBLIC_APP_NAME=HealthVault
 
 ### Base URL
 ```
-Production: https://api.yourdomain.com/api/v1
-Local:      http://localhost:4000/api/v1
+Production: http://13.205.90.167
+Local:      http://localhost:4000
 ```
 
-### Authentication
+### Authentication & User
 
 ```
-POST   /auth/register          Register a new user
-POST   /auth/login             Login, receive JWT
-POST   /auth/refresh           Refresh access token
-POST   /auth/logout            Invalidate refresh token
+POST   /api/auth/register      Register a new user
+POST   /api/auth/login         Login, receive JWT
+GET    /api/me                 Get current authenticated user profile
+```
+
+### Admin
+
+```
+GET    /api/admin/users        List all users (Admin only)
+GET    /api/admin/stats        Get dashboard statistics (Admin only)
+```
+
+### Volunteers
+
+```
+GET    /api/volunteers         List all volunteers
+POST   /api/volunteers         Create a volunteer profile
+GET    /api/volunteers/:id     Get volunteer by ID
+PUT    /api/volunteers/:id     Update volunteer
 ```
 
 ### Patients
 
 ```
-GET    /patients               List patients (Doctor/Admin only)
-GET    /patients/:id           Get patient profile
-POST   /patients               Create patient record
-PUT    /patients/:id           Update patient record
-```
-
-### Health Records
-
-```
-GET    /records/:patientId     Get all records for a patient
-POST   /records                Create a new record
-PUT    /records/:id            Update a record
-GET    /records/:id/audit      Get audit log for a record
-```
-
-### Appointments
-
-```
-GET    /appointments           List appointments (filtered by role)
-POST   /appointments           Book an appointment
-PUT    /appointments/:id       Update status (confirm/cancel/complete)
-```
-
-### Documents
-
-```
-POST   /documents/upload       Upload file to S3, returns presigned URL
-GET    /documents/:id          Get presigned download URL (expires 15 min)
+GET    /api/patients           List all patients
+POST   /api/patients           Create a patient profile
+GET    /api/patients/:id       Get patient by ID
+PUT    /api/patients/:id       Update patient
+DELETE /api/patients/:id       Delete patient (Admin only)
 ```
 
 ---
