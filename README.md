@@ -203,33 +203,29 @@ This system is designed with HIPAA-inspired principles for handling sensitive he
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/healthvault.git
-cd healthvault
+git clone https://github.com/PushkalMatcha/Health-Record-System.git
+cd Health-Record-System
 
 # Install backend dependencies
 cd backend
 npm install
 
-# Install frontend dependencies
-cd ../frontend
-npm install
-
 # Set up environment variables
 cp .env.example .env
-# Edit .env with your values (see Environment Variables section)
+# Edit .env with your PostgreSQL credentials
 
-# Run database migrations
-cd ../backend
-npm run migrate
-
-# Seed development data
-npm run seed
+# Run database migrations and generate client
+npx prisma generate
+npm run prisma:migrate
 
 # Start backend (runs on :4000)
 npm run dev
 
-# In another terminal, start frontend (runs on :3000)
-cd ../frontend
+# In another terminal, install frontend dependencies in root directory
+cd ..
+npm install
+
+# Start frontend (runs on :3000)
 npm run dev
 ```
 
