@@ -53,8 +53,8 @@ export const APP_CONFIG = {
   // Demo accounts
   DEMO_ACCOUNTS: {
     ADMIN: {
-      EMAIL: "admin@svds.org",
-      PASSWORD: "admin123",
+      EMAIL: "pushkal@test.com",
+      PASSWORD: "pass-123456",
     },
     VOLUNTEER: {
       EMAIL: "volunteer@svds.org",
