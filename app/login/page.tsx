@@ -256,7 +256,7 @@ export default function LoginPage() {
                 {selectedRole === "ADMIN" ? (
                   <p>Admin: {APP_CONFIG.DEMO_ACCOUNTS.ADMIN.EMAIL} / {APP_CONFIG.DEMO_ACCOUNTS.ADMIN.PASSWORD}</p>
                 ) : (
-                  <p>Volunteer: {APP_CONFIG.DEMO_ACCOUNTS.VOLUNTEER.EMAIL} — use the volunteer's Date of Birth to sign in</p>
+                  <p>Volunteer: {APP_CONFIG.DEMO_ACCOUNTS.VOLUNTEER.EMAIL} / {APP_CONFIG.DEMO_ACCOUNTS.VOLUNTEER.DOB}</p>
                 )}
               </div>
               <div className="mt-2 text-xs text-gray-400">

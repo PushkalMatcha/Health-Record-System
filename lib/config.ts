@@ -57,8 +57,8 @@ export const APP_CONFIG = {
       PASSWORD: "pass-123456",
     },
     VOLUNTEER: {
-      EMAIL: "volunteer@svds.org",
-      // Uses DOB for authentication
+      EMAIL: "matchapushkal@gmail.com",
+      DOB: "30/10/2005",
     },
   },
   
