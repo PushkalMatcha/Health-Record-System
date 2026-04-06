@@ -1,4 +1,4 @@
-🏥 SVDS – Health Record System
+# 🏥 SVDS - Health Record System
 
 A full-stack Health Record Management System that enables secure management of patient data, authentication, and role-based access.
 Deployed on AWS with a production-ready architecture using Nginx, PM2, PostgreSQL (RDS), and CI/CD via GitHub Actions.
@@ -60,42 +60,58 @@ GitHub → GitHub Actions → EC2 → Nginx → Frontend + Backend → PostgreSQ
 
 1. Clone repo
 
+```bash
 git clone https://github.com/your-username/Health-Record-System.git
 cd Health-Record-System
+```
 
 2. Backend Setup
 
+```bash
 cd backend
 npm install
+```
 
 Create ".env":
 
+```env
 DATABASE_URL=your_database_url
 JWT_SECRET=your_secret
 PORT=3000
+```
 
 Run migrations:
 
+```bash
 npx prisma migrate dev
+```
 
 Start backend:
 
+```bash
 npm run dev
+```
 
 ---
 
 3. Frontend Setup
 
+```bash
 cd frontend
 npm install
+```
 
 Create ".env.local":
 
+```env
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
+```
 
 Start frontend:
 
+```bash
 npm run dev
+```
 
 ---
 
@@ -123,6 +139,7 @@ npm run dev
 
 📁 Folder Structure
 
+```text
 community-connect/
 │
 ├── app/
@@ -176,18 +193,16 @@ community-connect/
 ├── package.json
 ├── tsconfig.json
 └── README.md
+```
 
 ---
 
 🧪 API Example
 
-Register
-
+```http
 POST /api/auth/register
-
-Login
-
 POST /api/auth/login
+```
 
 ---
 
